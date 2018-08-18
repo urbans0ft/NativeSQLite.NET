@@ -6,6 +6,8 @@ A SQLite .NET Library using P/Invoke
 # SQLite
 
 * Source code: [SQLite Amalgamation][sqlite] 
+* `#define SQLITE_API __declspec(dllexport)`
+* `dumpbin /exports sqlite3.dll`
 
 
 
