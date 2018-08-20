@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -71,8 +73,8 @@ namespace UrbanSoft.Data.SQLite
             }
             try
             {
-                SQLiteWrapper.installUnmanagedLib(Path.GetDirectoryName(filename));
-                if (SQLiteWrapper.sqlite3_open(this.filename, ref db) != 0)
+                SQLitePInvoke.installUnmanagedLib(Path.GetDirectoryName(filename));
+                if (SQLitePInvoke.sqlite3_open(this.filename, ref db) != 0)
                 {
                     throw new Exception("Error executing sqlite3_open()!");
                 }
@@ -96,10 +98,10 @@ namespace UrbanSoft.Data.SQLite
             try
             {
                 IntPtr errMsgPtr = IntPtr.Zero;
-                if (SQLiteWrapper.sqlite3_exec(db, sql, ref errMsgPtr) != SQLiteWrapper.SQLITE_OK)
+                if (SQLitePInvoke.sqlite3_exec(db, sql, ref errMsgPtr) != SQLitePInvoke.SQLITE_OK)
                 {
                     var errMsg = System.Runtime.InteropServices.Marshal.PtrToStringAnsi(errMsgPtr);
-                    SQLiteWrapper.sqlite3_free(errMsgPtr);
+                    SQLitePInvoke.sqlite3_free(errMsgPtr);
                     throw new Exception(
                         String.Format("Error executing sqlite3_exec() - {0}!", errMsg));
                 }
@@ -122,11 +124,11 @@ namespace UrbanSoft.Data.SQLite
             try
             {
                 IntPtr errMsgPtr = IntPtr.Zero;
-                if (SQLiteWrapper.sqlite3_exec(db, sql, ref errMsgPtr, query)
-                    != SQLiteWrapper.SQLITE_OK)
+                if (SQLitePInvoke.sqlite3_exec(db, sql, ref errMsgPtr, query)
+                    != SQLitePInvoke.SQLITE_OK)
                 {
                     var errMsg = Marshal.PtrToStringAnsi(errMsgPtr);
-                    SQLiteWrapper.sqlite3_free(errMsgPtr);
+                    SQLitePInvoke.sqlite3_free(errMsgPtr);
                     throw new Exception(
                         String.Format("Error executing sqlite3_exec() - {0}!", errMsg));
                 }
@@ -149,7 +151,7 @@ namespace UrbanSoft.Data.SQLite
         /// <returns>Should always return 0.</returns>
         protected int query(IntPtr NotUsed, int argc, IntPtr argv, IntPtr azColName)
         {
-            var enc = Encoding.GetEncoding(SQLiteWrapper.SQLITE_ENCODING);
+            var enc = Encoding.GetEncoding(SQLitePInvoke.SQLITE_ENCODING);
             var row = new Dictionary<string, string>(argc);
             for (int i = 0; i < argc; i++)
             {
@@ -199,7 +201,7 @@ namespace UrbanSoft.Data.SQLite
             {
                 if (this.db != IntPtr.Zero)
                 {
-                    SQLiteWrapper.sqlite3_close(this.db);
+                    SQLitePInvoke.sqlite3_close(this.db);
                     this.db = IntPtr.Zero;
                     this.isOpen = false;
                 }
