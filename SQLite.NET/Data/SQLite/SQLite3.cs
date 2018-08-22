@@ -1,22 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace UrbanSoft.Data.SQLite
 {
+    /// <summary>
+    /// A class to connect to a file based SQLite3 database.
+    /// </summary>
     public class SQLite3 : IDisposable
     {
         /// <summary>The hande to the DB file.</summary>
         private IntPtr db;
         /// <summary>The filename of the DB.</summary>
         private string filename;
-        /// <summary>Tells if the DB connection thus the file is open.</summary>
-        private bool isOpen;
-        private List<Dictionary<string, string>> lastQuery;
+
         /// <summary>
         /// Initialize a new SQLite connection. Before one can use this connection a call to
         /// open(string filename) is necessary.
@@ -42,7 +41,7 @@ namespace UrbanSoft.Data.SQLite
         {
             this.db = IntPtr.Zero;
             this.filename = filename;
-            this.isOpen = false;
+            this.IsOpen = false;
         }
 
         /// <summary>
@@ -64,7 +63,7 @@ namespace UrbanSoft.Data.SQLite
         /// null or empty.</exception>
         public void open(string filename)
         {
-            if (this.isOpen)
+            if (this.IsOpen)
                 throw new Exception("DB connection is already open.");
             this.filename = filename;
             if (String.IsNullOrEmpty(filename))
@@ -78,7 +77,7 @@ namespace UrbanSoft.Data.SQLite
                 {
                     throw new Exception("Error executing sqlite3_open()!");
                 }
-                this.isOpen = true;
+                this.IsOpen = true;
             }
             catch (Exception e)
             {
@@ -120,7 +119,7 @@ namespace UrbanSoft.Data.SQLite
         /// <param name="sql">The sql statemant to query the database.</param>
         public void query(string sql)
         {
-            lastQuery = new List<Dictionary<string, string>>();
+            LastQuery = new List<Dictionary<string, string>>();
             try
             {
                 IntPtr errMsgPtr = IntPtr.Zero;
@@ -161,7 +160,7 @@ namespace UrbanSoft.Data.SQLite
                 string key    = pKey.ToString(enc);
                 row.Add(key, value);
             }
-            lastQuery.Add(row);
+            LastQuery.Add(row);
             return 0;
         }
 
@@ -203,7 +202,7 @@ namespace UrbanSoft.Data.SQLite
                 {
                     SQLitePInvoke.sqlite3_close(this.db);
                     this.db = IntPtr.Zero;
-                    this.isOpen = false;
+                    this.IsOpen = false;
                 }
             }
         }
@@ -219,7 +218,7 @@ namespace UrbanSoft.Data.SQLite
             get { return this.filename; }
             set
             {
-                if (this.isOpen)
+                if (this.IsOpen)
                 {
                     throw new AccessViolationException(
                         "Can't change the file name while the connection is open.");
@@ -231,16 +230,10 @@ namespace UrbanSoft.Data.SQLite
         /// <summary>
         /// Tells if the current DB connection is already open (see open() method).
         /// </summary>
-        public bool IsOpen
-        {
-            get { return this.isOpen; }
-        }
+        public bool IsOpen { get; private set; }
         /// <summary>
         /// Gets the result of the last call to query().
         /// </summary>
-        public List<Dictionary<string, string>> LastQuery
-        {
-            get { return this.lastQuery; }
-        }
+        public List<Dictionary<string, string>> LastQuery { get; private set; }
     }
 }

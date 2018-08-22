@@ -240,3 +240,11 @@ ModelManifest.xml
 
 # FAKE - F# Make
 .fake/
+/SQLite.NET/Data/SQLite/sqlite3_x86.lib
+/SQLite.NET/Data/SQLite/sqlite3_x86.ipdb
+/SQLite.NET/Data/SQLite/sqlite3_x86.iobj
+/SQLite.NET/Data/SQLite/sqlite3_x86.exp
+/SQLite.NET/Data/SQLite/sqlite3_x64.lib
+/SQLite.NET/Data/SQLite/sqlite3_x64.ipdb
+/SQLite.NET/Data/SQLite/sqlite3_x64.iobj
+/SQLite.NET/Data/SQLite/sqlite3_x64.exp

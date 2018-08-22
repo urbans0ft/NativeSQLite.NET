@@ -1,12 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Runtime.InteropServices;
 
 namespace UrbanSoft.Windows.Native
 {
     internal static class Win32
     {
+        [DllImport("kernel32.dll",
+            EntryPoint = "LoadLibraryA", CharSet = CharSet.Ansi, ThrowOnUnmappableChar = true,
+            SetLastError = true)]
+        public static extern IntPtr LoadLibrary(
+            [MarshalAs(UnmanagedType.LPStr)]string lpFileName);
     }
 }

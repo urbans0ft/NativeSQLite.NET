@@ -4,11 +4,52 @@ A SQLite .NET Library using P/Invoke
 
 # Under development
 
-**Do not use.**
+**Beta Release**
+
+
+# Usage
+
+```csharp
+// HelloSQLite.cs
+// compile: csc /reference:SQLite.NET.dll HelloSQLite.cs
+using System;
+using UrbanSoft.Data.SQLite;
+
+namespace SQLiteTest
+{
+    public class SQLiteProgram
+    {
+        public static void Main()
+        {
+            SQLite3 sqlite = new SQLite3("sqlite.db");
+            sqlite.open();
+            sqlite.execute(@"
+                CREATE TABLE IF NOT EXISTS hello_world (
+                 id  INTEGER PRIMARY KEY,
+                 msg TEXT)
+            ");
+            sqlite.execute(@"
+                INSERT INTO hello_world(msg)
+                VALUES ('Hello World!');
+            ");
+            sqlite.query("SELECT * FROM hello_world");
+            foreach(var row in sqlite.LastQuery)
+            {
+                foreach(var kv in row)
+                {
+                    Console.WriteLine("{0}: {1}", kv.Key, kv.Value);
+                }
+                Console.WriteLine("--");
+            }
+        }
+    }
+}
+```
 
 
 # SQLite
 
+* Current version: 3.24.0
 * Source code: [SQLite Amalgamation](https://www.sqlite.org/download.html) 
 * `#define SQLITE_API __declspec(dllexport)`
 * `dumpbin /exports sqlite3.dll`
@@ -22,16 +63,15 @@ A SQLite .NET Library using P/Invoke
             * **SQLite3**
             * **SQLiteException**
             * **SQLitePInvoke**
-    * Windows
-        * Native
-            * **Win32**
+	* Windows
+		* Native
+			* **Win32**
 
 
 # Naming Conventions
 
 In general _all_ members and namespaces are written using [**camelCase**](https://en.wikipedia.org/wiki/Camel_case).  
 (Other rules might overrule this one.)
-
 
 ## Namespaces
 

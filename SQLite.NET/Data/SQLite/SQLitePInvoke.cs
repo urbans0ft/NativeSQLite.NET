@@ -1,10 +1,11 @@
 ﻿using System;
-using System.Linq;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Collections.Generic;
+
+using UrbanSoft.Windows.Native;
 
 namespace UrbanSoft.Data.SQLite
 {
@@ -169,12 +170,7 @@ namespace UrbanSoft.Data.SQLite
         #endregion
 
         #region installUnmanagedLib
-        [DllImport("kernel32.dll",
-            EntryPoint = "LoadLibraryA", CharSet = CharSet.Ansi, ThrowOnUnmappableChar = true,
-            SetLastError = true)]
-        private static extern IntPtr LoadLibrary(
-            [MarshalAs(UnmanagedType.LPStr)]string lpFileName);
-
+        
         /// <summary>
         /// Extract the x86 and x64 SQLite embedded resource as a library DLL file.
         /// </summary>
@@ -210,7 +206,7 @@ namespace UrbanSoft.Data.SQLite
                 dll = pathX86;
             }
             // the files are present thus we can load the libraries.
-            if (LoadLibrary(dll) == IntPtr.Zero)
+            if (Win32.LoadLibrary(dll) == IntPtr.Zero)
             {
                 throw new DllNotFoundException(
                     String.Format("LoadLibrary failed with last error code {0}",
