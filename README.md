@@ -17,32 +17,44 @@ using UrbanSoft.Data.SQLite;
 
 namespace SQLiteTest
 {
-    public class SQLiteProgram
+  public class SQLiteProgram
+  {
+    public static void Main()
     {
-        public static void Main()
+      using (var sqlite = new SQLite3("sqlite.db"))
+      {
+        sqlite.execute(@"
+          CREATE TABLE IF NOT EXISTS hello_world (
+          id  INTEGER PRIMARY KEY,
+          msg TEXT)
+        ");
+
+     // using (var transaction = new SQLiteTransaction(sqlite))
+        using (var transaction = sqlite.beginTransaction())
         {
-            SQLite3 sqlite = new SQLite3("sqlite.db");
-            sqlite.open();
-            sqlite.execute(@"
-                CREATE TABLE IF NOT EXISTS hello_world (
-                 id  INTEGER PRIMARY KEY,
-                 msg TEXT)
-            ");
-            sqlite.execute(@"
-                INSERT INTO hello_world(msg)
-                VALUES ('Hello World!');
-            ");
-            sqlite.query("SELECT * FROM hello_world");
-            foreach(var row in sqlite.LastQuery)
-            {
-                foreach(var kv in row)
-                {
-                    Console.WriteLine("{0}: {1}", kv.Key, kv.Value);
-                }
-                Console.WriteLine("--");
-            }
+          sqlite.execute(@"
+            INSERT INTO hello_world(msg)
+            VALUES ('Hello World!');
+          ");
+          sqlite.execute(@"
+            INSERT INTO hello_world(msg)
+            VALUES ('Hello SQLite!');
+          ");
+          // throw new Exception("ROLLBACK");
+        } // implicit commit or rollback
+
+        sqlite.query("SELECT * FROM hello_world");
+        foreach(var row in sqlite.LastQuery)
+        {
+          foreach(var kv in row)
+          {
+            Console.WriteLine("{0}: {1}", kv.Key, kv.Value);
+          }
+          Console.WriteLine("--");
         }
+      }
     }
+  }
 }
 ```
 
