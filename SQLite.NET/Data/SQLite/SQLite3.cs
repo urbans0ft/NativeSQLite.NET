@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -25,10 +26,10 @@ namespace UrbanSoft.Data.SQLite
             this.init(null);
         }
         /// <summary>
-        /// Initialize a new SQLite connection with a given filename. Before one can use the
-        /// connection a call to the open() method is mandatory.
+        /// Initialize a new SQLite connection with a given filename and opens
+        /// the connection immediately.
         /// </summary>
-        /// <param name="filename">The files name where to store the DB.</param>
+        /// <param name="filename">The file name where to store the DB.</param>
         public SQLite3(string filename)
         {
             this.init(filename);
@@ -39,9 +40,13 @@ namespace UrbanSoft.Data.SQLite
         /// <param name="filename">The file name where to store the DB.</param>
         private void init(string filename)
         {
-            this.db = IntPtr.Zero;
+            this.db       = IntPtr.Zero;
             this.filename = filename;
-            this.IsOpen = false;
+            this.IsOpen   = false;
+            if (!string.IsNullOrEmpty(filename))
+            {
+                this.open();
+            }
         }
 
         /// <summary>
@@ -56,7 +61,7 @@ namespace UrbanSoft.Data.SQLite
         /// Opens up a new connection with a given file.
         /// At the file's location the connector also places the necessary library files.
         /// </summary>
-        /// <param name="filename">The file to use for storing the DB.</param>
+        /// <param name="filename">The file which is storing the DB.</param>
         /// <exception cref="Exception">Thrown if the connection is already open or an internal
         /// library error occured while executing sqlite3_open().</exception>
         /// <exception cref="ArgumentNullException">Thrown if the provided file name is
@@ -72,8 +77,9 @@ namespace UrbanSoft.Data.SQLite
             }
             try
             {
+                int err;
                 SQLitePInvoke.installUnmanagedLib(Path.GetDirectoryName(filename));
-                if (SQLitePInvoke.sqlite3_open(this.filename, ref db) != 0)
+                if ((err = SQLitePInvoke.sqlite3_open(this.filename, ref db)) != 0)
                 {
                     throw new Exception("Error executing sqlite3_open()!");
                 }
@@ -170,7 +176,7 @@ namespace UrbanSoft.Data.SQLite
         /// using block.
         /// </summary>
         /// <example><code>
-        /// using (var con = new SQLiteConnection("database.db"))
+        /// using (var con = new SQLite3("database.db"))
         /// {
         ///   con.open();
         /// } // closed implicitly => disposed
@@ -180,7 +186,7 @@ namespace UrbanSoft.Data.SQLite
             Dispose();
         }
         /// <summary>
-        /// Releases all resoucres used by the connection. 
+        /// Releases all resoucres used by the connection.
         /// </summary>
         public void Dispose()
         {
@@ -188,7 +194,7 @@ namespace UrbanSoft.Data.SQLite
             GC.SuppressFinalize(this);
         }
         /// <summary>
-        /// Releases the unmanaged resources use by the SQLiteConnection and
+        /// Releases the unmanaged resources use by the SQLite3 and
         /// optionally releases the managed resources.
         /// </summary>
         /// <param name="disposing">\c true to release both managed and
@@ -206,10 +212,39 @@ namespace UrbanSoft.Data.SQLite
                 }
             }
         }
+        /// <summary>
+        /// Begins a database transaction.
+        /// </summary>
+        /// <returns>An object representing the new transaction.</returns>
+        public SQLiteTransaction beginTransaction()
+        {
+            return new SQLiteTransaction(this);
+        }
+        /// <summary>
+        /// Begins a database transaction.
+        /// </summary>
+        /// <param name="behavior">One of the SQLiteTransactionBehavior values.
+        /// </param>
+        /// <returns>An object representing the new transaction.</returns>
+        public SQLiteTransaction beginTransaction(SQLiteTransactionBehavior behavior)
+        {
+            return new SQLiteTransaction(this, behavior);
+        }
+
+        /// <summary>
+        /// Changes the current database for an open Connection object.
+        /// </summary>
+        /// <param name="databaseName">The name of the database to use in place
+        /// of the current database.</param>
+        public void changeDatabase(string databaseName)
+        {
+            throw new NotImplementedException();
+        }
+
 
         /// <summary>
         /// The current file to use to store the DB. A setting will fail in case the DB connection
-        /// is already open (see SQLiteConnection::IsOpen property).
+        /// is already open (see SQLite3::IsOpen property).
         /// </summary>
         /// <exception cref="AccessViolationException">thrown if trying to set the filename
         /// on an opened connection.</exception>
@@ -235,5 +270,6 @@ namespace UrbanSoft.Data.SQLite
         /// Gets the result of the last call to query().
         /// </summary>
         public List<Dictionary<string, string>> LastQuery { get; private set; }
+
     }
 }

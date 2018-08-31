@@ -35,6 +35,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -46,6 +47,9 @@
     <Compile Include="Data\SQLite\SQLite3.cs" />
     <Compile Include="Data\SQLite\SQLiteException.cs" />
     <Compile Include="Data\SQLite\SQLitePInvoke.cs" />
+    <Compile Include="Data\SQLite\SQLiteTransaction.cs" />
+    <Compile Include="Data\SQLite\SQLiteTransactionBehavior.cs" />
+    <Compile Include="Extensions\Extension.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Windows\Native\Win32.cs" />
   </ItemGroup>
