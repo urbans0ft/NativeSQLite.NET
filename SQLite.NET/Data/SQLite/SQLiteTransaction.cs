@@ -24,15 +24,14 @@ namespace UrbanSoft.Data.SQLite
         /// <param name="connection">The sqlite3 connection which has to be
         /// open.</param>
         public SQLiteTransaction(SQLite3 connection) 
-            : this (connection, SQLiteTransactionBehavior.Default)
-        {
-        }
+            : this (connection, SQLiteTransactionBehavior.Default){}
         /// <summary>
         /// Represents a transaction to be performed at the sqlite db.
         /// </summary>
         /// <param name="connection">The sqlite3 connection which has to be
         /// open.</param>
-        /// <param name="behavior">Defines the behavior of a Transaction.</param>
+        /// <param name="behavior">Defines the behavior of the Transaction.
+        /// </param>
         public SQLiteTransaction(SQLite3 connection,
             SQLiteTransactionBehavior behavior)
         {

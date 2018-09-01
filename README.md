@@ -1,10 +1,21 @@
 # NativeSQLite.NET
-A SQLite .NET Library using P/Invoke
+A SQLite .NET Library using P/Invoke for x64 and x86 Windows operating systems.
 
 
-# Under development
+# Table of Contents
 
-**Beta Release**
+* [Current Release](#current-release)
+* [Usage](#usage)
+* [Native SQLite](#native-sqlite)
+* [Namespace, Class & File Structure](#namespaces--classes--files)
+* [Naming Conventions](#naming-conventions)
+* [Bugs](bugs)
+* [Todo](todo)
+
+# Current Release
+
+**v0.2-beta**  
+This release is not stable yet. The basic usage scenario should work though.
 
 
 # Usage
@@ -59,12 +70,12 @@ namespace SQLiteTest
 ```
 
 
-# SQLite
+# Native SQLite
 
 * Current version: 3.24.0
 * Source code: [SQLite Amalgamation](https://www.sqlite.org/download.html) 
 * `#define SQLITE_API __declspec(dllexport)`
-* `dumpbin /exports sqlite3.dll`
+* View expoted functions: `dumpbin /exports sqlite3.dll`
 
 
 # Namespaces / Classes / Files
@@ -75,6 +86,12 @@ namespace SQLiteTest
             * **SQLite3**
             * **SQLiteException**
             * **SQLitePInvoke**
+			* **SQLiteTransaction**
+			* **SQLiteTransactionBehavior**
+			* _sqlite3_x64.dll_
+			* _sqlite3_x86.dll_
+	* Extension
+		* **Extension**
 	* Windows
 		* Native
 			* **Win32**
@@ -105,3 +122,14 @@ In general _all_ members and namespaces are written using [**camelCase**](https:
 * Constants only consist of upper case and optional underscores (_) to separate
   words and increase the readability.
     * E.g.: `internal const string START_NOW = "constant"`
+
+
+# Bugs
+
+* Beware UTF-8 filenames they are not tested but are likely to cause problems.
+
+
+# Todo
+
+* Implement the SQLiteException class. Let the SQLitePInvoke do the error
+  handling.

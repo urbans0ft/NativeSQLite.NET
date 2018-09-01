@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -77,9 +76,8 @@ namespace UrbanSoft.Data.SQLite
             }
             try
             {
-                int err;
                 SQLitePInvoke.installUnmanagedLib(Path.GetDirectoryName(filename));
-                if ((err = SQLitePInvoke.sqlite3_open(this.filename, ref db)) != 0)
+                if (SQLitePInvoke.sqlite3_open(this.filename, ref db) != SQLitePInvoke.SQLITE_OK)
                 {
                     throw new Exception("Error executing sqlite3_open()!");
                 }
