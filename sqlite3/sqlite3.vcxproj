@@ -137,8 +137,12 @@
     <ClCompile Include="sqlite3.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="resource.h" />
     <ClInclude Include="sqlite3.h" />
     <ClInclude Include="sqlite3ext.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="sqlite3.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
