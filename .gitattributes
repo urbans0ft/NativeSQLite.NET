@@ -61,3 +61,11 @@
 #*.PDF   diff=astextplain
 #*.rtf   diff=astextplain
 #*.RTF   diff=astextplain
+
+###############################################################################
+# ignore native sqlite3 code for language detection
+# 
+# GitHub's default language detection uses linguist. With the folowing line
+# one advises linguist to not consider files found within a certain folder.
+###############################################################################
+sqlite3/* linguist-vendored
