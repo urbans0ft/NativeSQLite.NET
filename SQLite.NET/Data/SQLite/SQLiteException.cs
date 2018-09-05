@@ -6,7 +6,19 @@ using System.Threading.Tasks;
 
 namespace UrbanSoft.Data.SQLite
 {
-    class SQLiteException
+    public class SQLiteException : Exception
     {
+        public SQLiteException()
+        {
+        }
+
+        public SQLiteException(string message) : base(message)
+        {
+        }
+
+        public SQLiteException(string message, Exception inner)
+            : base(message, inner)
+        {
+        }
     }
 }

@@ -34,34 +34,25 @@ namespace SQLiteTest
     {
       using (var sqlite = new SQLite3("sqlite.db"))
       {
-        sqlite.execute(@"
-          CREATE TABLE IF NOT EXISTS hello_world (
-          id  INTEGER PRIMARY KEY,
-          msg TEXT)
-        ");
+        sqlite.execute(@"CREATE TABLE IF NOT EXISTS hello_world (
+          id  INTEGER PRIMARY KEY, msg TEXT)");
 
      // using (var transaction = new SQLiteTransaction(sqlite))
         using (var transaction = sqlite.beginTransaction())
         {
-          sqlite.execute(@"
-            INSERT INTO hello_world(msg)
-            VALUES ('Hello World!');
-          ");
-          sqlite.execute(@"
-            INSERT INTO hello_world(msg)
-            VALUES ('Hello SQLite!');
-          ");
+          sqlite.execute(@"INSERT INTO hello_world(msg)
+            VALUES ('Hello World!')");
+          sqlite.execute(@"INSERT INTO hello_world(msg)
+            VALUES ('Hello SQLite!')");
           // throw new Exception("ROLLBACK");
-        } // implicit commit or rollback
+        } // implicit commit or rollback on exception
 
         sqlite.query("SELECT * FROM hello_world");
-        foreach(var row in sqlite.LastQuery)
-        {
-          foreach(var kv in row)
-          {
+        foreach(var row in sqlite.LastQuery) {
+          foreach(var kv in row) {
             Console.WriteLine("{0}: {1}", kv.Key, kv.Value);
           }
-          Console.WriteLine("--");
+          Console.WriteLine("EOL");
         }
       }
     }
@@ -127,6 +118,8 @@ In general _all_ members and namespaces are written using [**camelCase**](https:
 # Bugs
 
 * Beware UTF-8 filenames they are not tested but are likely to cause problems.
+* Exchanging the SQLite.NET.dll won't replace the native DLLs _sqlite3_x64.dll_
+  & _sqlite3_x86.dll_.
 
 
 # Todo
